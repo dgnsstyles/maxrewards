@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -7,9 +7,37 @@ import SectionHeader from '../components/SectionHeader';
 import CardTile from '../components/CardTile';
 import RewardBadge from '../components/RewardBadge';
 import { mockCards, mockUserStats } from '../data/mockData';
+import WidgetDataManager from '../utils/WidgetDataManager';
 
 export default function HomeDashboard({ navigation }: any) {
   const bestCard = mockCards[0]; // Chase Sapphire Preferred
+
+  // Sync data with iOS widget when component mounts
+  useEffect(() => {
+    const syncWidgetData = async () => {
+      try {
+        const widgetManager = WidgetDataManager.getInstance();
+        
+        await widgetManager.syncWithAppData({
+          bestCard: {
+            name: bestCard.name,
+            bank: bestCard.bank,
+            rewardRate: bestCard.rewardRate,
+            category: bestCard.category || 'General',
+            color: bestCard.color,
+          },
+          monthlyRewards: mockUserStats.rewardsThisMonth,
+          totalRewards: mockUserStats.totalRewards,
+        });
+        
+        console.log('Widget data synced successfully');
+      } catch (error) {
+        console.log('Widget sync failed:', error);
+      }
+    };
+
+    syncWidgetData();
+  }, [bestCard]);
   
   return (
     <SafeAreaView style={styles.container}>
