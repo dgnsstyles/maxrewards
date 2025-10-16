@@ -39,30 +39,30 @@ class WidgetDataManager {
 
     try {
       // Use UserDefaults to share data with widget
-      const { UserDefaults } = NativeModules;
+      const { UserDefaultsModule } = NativeModules;
       
-      if (UserDefaults) {
+      if (UserDefaultsModule) {
         // Save best card data
-        await UserDefaults.setObjectForKey(
+        await UserDefaultsModule.setObjectForKey(
           JSON.stringify(data.bestCard),
           'bestCard',
           this.suiteName
         );
 
         // Save rewards data
-        await UserDefaults.setDoubleForKey(
+        await UserDefaultsModule.setDoubleForKey(
           data.monthlyRewards,
           'monthlyRewards',
           this.suiteName
         );
 
-        await UserDefaults.setDoubleForKey(
+        await UserDefaultsModule.setDoubleForKey(
           data.totalRewards,
           'totalRewards',
           this.suiteName
         );
 
-        await UserDefaults.setStringForKey(
+        await UserDefaultsModule.setStringForKey(
           data.lastUpdated,
           'lastUpdated',
           this.suiteName
@@ -74,7 +74,7 @@ class WidgetDataManager {
         console.log('Widget data updated successfully');
         return true;
       } else {
-        console.warn('UserDefaults module not available');
+        console.warn('UserDefaultsModule not available');
         return false;
       }
     } catch (error) {
@@ -132,9 +132,9 @@ class WidgetDataManager {
    */
   private async reloadWidgetTimeline(): Promise<void> {
     try {
-      const { WidgetCenter } = NativeModules;
-      if (WidgetCenter) {
-        await WidgetCenter.reloadTimelines('MaxRewardsWidget');
+      const { WidgetCenterModule } = NativeModules;
+      if (WidgetCenterModule) {
+        await WidgetCenterModule.reloadTimelines('MaxRewardsWidget');
       }
     } catch (error) {
       console.log('Widget timeline reload not available:', error);
